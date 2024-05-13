@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/sanrentai/ml"
+	"github.com/sanrentai/ml/tree"
 	"gonum.org/v1/plot"
 
 	// "gonum.org/v1/plot/plotter"
@@ -16,11 +16,11 @@ var (
 )
 
 // CreatePlot 绘制树形结构
-func CreatePlotTree(inTree *ml.Tree) {
+func CreatePlotTree(inTree *tree.Tree) {
 	p := plot.New()
 	p.HideAxes()
-	totalW = float64(ml.GetNumLeafs(inTree))
-	totalD = float64(ml.GetTreeDepth(inTree))
+	totalW = float64(inTree.GetNumLeafs())
+	totalD = float64(inTree.GetTreeDepth())
 	p.X.Min = 0
 	p.X.Max = 1
 	p.Y.Min = 0
@@ -55,8 +55,8 @@ func PlotMidText(p *plot.Plot, cntrPt, parentPt plotter.XY, txtString string) {
 	p.Add(labels)
 }
 
-func PlotTree(p *plot.Plot, myTree *ml.Tree, parentPt plotter.XY, nodeTxt string) {
-	numLeafs := ml.GetNumLeafs(myTree)
+func PlotTree(p *plot.Plot, myTree *tree.Tree, parentPt plotter.XY, nodeTxt string) {
+	numLeafs := myTree.GetNumLeafs()
 	// depth := ml.GetTreeDepth(myTree)
 
 	cntrPt := plotter.XY{
@@ -88,6 +88,6 @@ func plot_tree() {
 	// 构建示例树
 	// 绘制树形结构
 	myTree := retrieveTree(0)
-	myTree.Children = append(myTree.Children, ml.NewTree("maybe"))
+	myTree.Children = append(myTree.Children, tree.NewTree("maybe"))
 	CreatePlotTree(myTree)
 }

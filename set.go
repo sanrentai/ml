@@ -1,7 +1,7 @@
 package ml
 
 // 用于数组去重
-func set(arr []any) []any {
+func Set(arr []any) []any {
 	uniqueMap := make(map[any]bool)
 	uniqueSlice := []any{}
 

@@ -34,7 +34,7 @@ func classifyPerson() {
 
 	// 使用用户输入的数据进行分类
 	inArr := []float64{ffMiles, percentTats, iceCream}
-	classifierResult := knn.Classify0([]float64{(inArr[0] - minVals[0]) / ranges[0], (inArr[1] - minVals[1]) / ranges[1], (inArr[2] - minVals[2]) / ranges[2]}, normMat, datingLabels, 3)
+	classifierResult := knn.Classify([]float64{(inArr[0] - minVals[0]) / ranges[0], (inArr[1] - minVals[1]) / ranges[1], (inArr[2] - minVals[2]) / ranges[2]}, normMat, datingLabels, 3)
 	classifierResultInt, err := strconv.Atoi(classifierResult)
 	if err != nil {
 		panic(err)

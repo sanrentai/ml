@@ -4,8 +4,8 @@ import (
 	"github.com/sanrentai/ml"
 )
 
-// k-近邻算法
-func Classify0(inX []float64, dataSet [][]float64, labels []string, k int) string {
+// k-近邻算法 knn
+func Classify(inX []float64, dataSet [][]float64, labels []string, k int) string {
 	distances := make([]float64, len(dataSet))
 
 	// 计算输入向量与每个样本的欧式距离

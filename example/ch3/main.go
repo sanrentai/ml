@@ -7,7 +7,10 @@ func main() {
 	// fn34()
 	// fn35()
 	// fn36()
-	plot_tree()
+	// plot_tree()
 
 	// plottest()
+
+	// fn38()
+	fn39()
 }

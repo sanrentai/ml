@@ -12,7 +12,7 @@ func fn21() {
 	fmt.Println(labels)
 
 	inX := []float64{0, 0}
-	label := knn.Classify0(inX, group, labels, 3)
+	label := knn.Classify(inX, group, labels, 3)
 	fmt.Println(label)
 }
 

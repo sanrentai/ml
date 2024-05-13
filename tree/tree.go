@@ -1,70 +1,13 @@
-package ml
+package tree
 
 import (
 	"fmt"
 	"strings"
+
+	"github.com/sanrentai/ml"
 )
 
-// TreeNode 表示决策树节点
-type TreeNode struct {
-	SplitFeature string
-	Children     map[interface{}]*TreeNode
-	LeafValue    interface{}
-}
-
-func CreateTree(dataSet [][]interface{}, labels []string) *Tree {
-	classList := make([]interface{}, len(dataSet))
-	for i, example := range dataSet {
-		classList[i] = example[len(example)-1]
-	}
-	// 如果类别完全相同，则停止划分，返回该类别
-	if countOccurrences(classList, classList[0]) == len(classList) {
-		return &Tree{Value: classList[0]}
-	}
-	if len(dataSet[0]) == 1 {
-		return &Tree{Value: MajorityCnt(classList)}
-	}
-
-	bestFeat := ChooseBestFeatureToSplit(dataSet)
-	bestFeatLabel := labels[bestFeat]
-	myTree := &Tree{
-		Value: bestFeatLabel,
-	}
-
-	// 清空labels[bestFeat]
-	labels = append(labels[:bestFeat], labels[bestFeat+1:]...)
-
-	featValues := make([]interface{}, len(dataSet))
-	for i, example := range dataSet {
-		featValues[i] = example[bestFeat]
-	}
-
-	uniqueVals := set(featValues)
-
-	for value := range uniqueVals {
-		subLabels := make([]string, len(labels))
-		copy(subLabels, labels)
-		subDataSet := SplitDataSet(dataSet, bestFeat, value)
-		if myTree.Children == nil {
-			myTree.Children = make([]*Tree, 0)
-		}
-		myTree.Children = append(myTree.Children, CreateTree(subDataSet, subLabels))
-	}
-
-	return myTree
-}
-
-// countOccurrences 计算列表中指定元素出现的次数
-func countOccurrences(list []interface{}, elem interface{}) int {
-	count := 0
-	for _, e := range list {
-		if e == elem {
-			count++
-		}
-	}
-	return count
-}
-
+// 决策树
 type Tree struct {
 	Value    interface{}
 	Children []*Tree
@@ -75,6 +18,11 @@ func NewTree(val interface{}, tree ...*Tree) *Tree {
 		Value:    val,
 		Children: tree,
 	}
+}
+
+// 分类
+func (myTree *Tree) Classify(featureLabels []string, testVec []interface{}) interface{} {
+	return classify(myTree, featureLabels, testVec)
 }
 
 func (t *Tree) String() string {
@@ -99,8 +47,61 @@ func (t *Tree) String() string {
 	return sb.String()
 }
 
+func CreateTree(dataSet [][]interface{}, labels []string) *Tree {
+	classList := make([]interface{}, len(dataSet))
+	for i, example := range dataSet {
+		classList[i] = example[len(example)-1]
+	}
+	// 如果类别完全相同，则停止划分，返回该类别
+	if countOccurrences(classList, classList[0]) == len(classList) {
+		return &Tree{Value: classList[0]}
+	}
+	if len(dataSet[0]) == 1 {
+		return &Tree{Value: ml.MajorityCnt(classList)}
+	}
+
+	bestFeat := ml.ChooseBestFeatureToSplit(dataSet)
+	bestFeatLabel := labels[bestFeat]
+	myTree := &Tree{
+		Value: bestFeatLabel,
+	}
+
+	// 清空labels[bestFeat]
+	labels = append(labels[:bestFeat], labels[bestFeat+1:]...)
+
+	featValues := make([]interface{}, len(dataSet))
+	for i, example := range dataSet {
+		featValues[i] = example[bestFeat]
+	}
+
+	uniqueVals := ml.Set(featValues)
+
+	for value := range uniqueVals {
+		subLabels := make([]string, len(labels))
+		copy(subLabels, labels)
+		subDataSet := ml.SplitDataSet(dataSet, bestFeat, value)
+		if myTree.Children == nil {
+			myTree.Children = make([]*Tree, 0)
+		}
+		myTree.Children = append(myTree.Children, CreateTree(subDataSet, subLabels))
+	}
+
+	return myTree
+}
+
+// countOccurrences 计算列表中指定元素出现的次数
+func countOccurrences(list []interface{}, elem interface{}) int {
+	count := 0
+	for _, e := range list {
+		if e == elem {
+			count++
+		}
+	}
+	return count
+}
+
 // 获取叶节点的数目
-func GetNumLeafs(myTree *Tree) int {
+func (myTree *Tree) GetNumLeafs() int {
 	if myTree == nil {
 		return 0
 	}
@@ -109,13 +110,13 @@ func GetNumLeafs(myTree *Tree) int {
 	}
 	numLeafs := 0
 	for _, child := range myTree.Children {
-		numLeafs += GetNumLeafs(child)
+		numLeafs += child.GetNumLeafs()
 	}
 	return numLeafs
 }
 
 // 获取树的深度
-func GetTreeDepth(myTree *Tree) int {
+func (myTree *Tree) GetTreeDepth() int {
 	if myTree == nil {
 		return 0
 	}
@@ -124,7 +125,7 @@ func GetTreeDepth(myTree *Tree) int {
 	}
 	maxDepth := 0
 	for _, child := range myTree.Children {
-		thisDepth := 1 + GetTreeDepth(child)
+		thisDepth := 1 + child.GetTreeDepth()
 		if thisDepth > maxDepth {
 			maxDepth = thisDepth
 		}

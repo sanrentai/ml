@@ -27,7 +27,7 @@ func DatingClass() {
 
 	errorCount := 0.0
 	for i := 0; i < numTestVecs; i++ {
-		classifierResult := knn.Classify0(normMat[i], normMat[numTestVecs:m], datingLabels[numTestVecs:m], 3)
+		classifierResult := knn.Classify(normMat[i], normMat[numTestVecs:m], datingLabels[numTestVecs:m], 3)
 		fmt.Printf("the classifier came back with: %s, the real answer is: %s\n", classifierResult, datingLabels[i])
 		if classifierResult != datingLabels[i] {
 			errorCount += 1.0
