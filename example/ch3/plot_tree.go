@@ -66,9 +66,10 @@ func PlotTree(p *plot.Plot, myTree *tree.Tree, parentPt plotter.XY, nodeTxt stri
 	PlotMidText(p, cntrPt, parentPt, nodeTxt)
 	PlotNode(p, myTree.Value.(string), cntrPt, parentPt, decisionNode)
 	yOff -= 1.0 / totalD
-	for i, child := range myTree.Children {
+	for _, key := range myTree.Keys {
+		child := myTree.Children[key]
 		if len(child.Children) > 0 {
-			PlotTree(p, child, cntrPt, fmt.Sprintf("%v", i))
+			PlotTree(p, child, cntrPt, fmt.Sprintf("%v", key))
 		} else {
 			xOff += 1.0 / totalW
 			PlotNode(p, child.Value.(string), plotter.XY{
@@ -78,7 +79,7 @@ func PlotTree(p *plot.Plot, myTree *tree.Tree, parentPt plotter.XY, nodeTxt stri
 			PlotMidText(p, plotter.XY{
 				X: xOff,
 				Y: yOff,
-			}, cntrPt, fmt.Sprintf("%v", i))
+			}, cntrPt, fmt.Sprintf("%v", key))
 		}
 	}
 	yOff += 1.0 / totalD
@@ -88,6 +89,7 @@ func plot_tree() {
 	// 构建示例树
 	// 绘制树形结构
 	myTree := retrieveTree(0)
-	myTree.Children = append(myTree.Children, tree.NewTree("maybe"))
+	myTree.AddChild(3, tree.NewTree("maybe"))
+	// myTree.Children = append(myTree.Children, tree.NewTree("maybe"))
 	CreatePlotTree(myTree)
 }

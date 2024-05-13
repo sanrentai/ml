@@ -10,14 +10,24 @@ import (
 // 决策树
 type Tree struct {
 	Value    interface{}
-	Children []*Tree
+	Keys     []interface{}
+	Children map[interface{}]*Tree
 }
 
-func NewTree(val interface{}, tree ...*Tree) *Tree {
+func NewTree(val interface{}) *Tree {
 	return &Tree{
-		Value:    val,
-		Children: tree,
+		Value: val,
 	}
+}
+
+func (myTree *Tree) AddChild(val interface{}, child *Tree) *Tree {
+	if myTree.Children == nil {
+		myTree.Children = make(map[interface{}]*Tree)
+		myTree.Keys = make([]interface{}, 0)
+	}
+	myTree.Children[val] = child
+	myTree.Keys = append(myTree.Keys, val)
+	return myTree
 }
 
 // 分类
@@ -34,9 +44,14 @@ func (t *Tree) String() string {
 		sb.WriteString("{")
 		sb.WriteString(fmt.Sprintf(`"%v": `, t.Value))
 		sb.WriteString("{")
-		for i, child := range t.Children {
-			sb.WriteString(fmt.Sprintf(`%v: %v`, i, child))
-			if i < len(t.Children)-1 {
+		for i, key := range t.Keys {
+			if k, ok := key.(string); ok {
+				sb.WriteString(fmt.Sprintf(`"%v": %v`, k, t.Children[key]))
+			} else {
+				sb.WriteString(fmt.Sprintf(`%v: %v`, key, t.Children[key]))
+			}
+
+			if i < len(t.Keys)-1 {
 				sb.WriteString(", ")
 			}
 		}
@@ -76,14 +91,11 @@ func CreateTree(dataSet [][]interface{}, labels []string) *Tree {
 
 	uniqueVals := ml.Set(featValues)
 
-	for value := range uniqueVals {
+	for _, value := range uniqueVals {
 		subLabels := make([]string, len(labels))
 		copy(subLabels, labels)
 		subDataSet := ml.SplitDataSet(dataSet, bestFeat, value)
-		if myTree.Children == nil {
-			myTree.Children = make([]*Tree, 0)
-		}
-		myTree.Children = append(myTree.Children, CreateTree(subDataSet, subLabels))
+		myTree.AddChild(value, CreateTree(subDataSet, subLabels))
 	}
 
 	return myTree

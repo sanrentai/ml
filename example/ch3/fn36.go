@@ -16,23 +16,20 @@ func fn36() {
 
 func retrieveTree(i int) *tree.Tree {
 	listOfTrees := []*tree.Tree{
-		tree.NewTree("no surfacing",
-			tree.NewTree("no"),
-			tree.NewTree("flippers",
-				tree.NewTree("no"),
-				tree.NewTree("yes"),
+		tree.NewTree("no surfacing").
+			AddChild(0, tree.NewTree("no")).
+			AddChild(1, tree.NewTree("flippers").
+				AddChild(0, tree.NewTree("no")).
+				AddChild(1, tree.NewTree("yes")),
 			),
-		),
-		tree.NewTree("no surfacing",
-			tree.NewTree("no"),
-			tree.NewTree("flippers",
-				tree.NewTree("head",
-					tree.NewTree("no"),
-					tree.NewTree("yes"),
-				),
-				tree.NewTree("yes"),
+		tree.NewTree("no surfacing").
+			AddChild(0, tree.NewTree("no")).
+			AddChild(1, tree.NewTree("flippers").
+				AddChild(0, tree.NewTree("head").
+					AddChild(0, tree.NewTree("no")).
+					AddChild(1, tree.NewTree("yes"))).
+				AddChild(1, tree.NewTree("no")),
 			),
-		),
 	}
 	return listOfTrees[i]
 }
