@@ -8,6 +8,26 @@ import (
 
 type Matrix [][]float64
 
+func Mat(a []float64) Matrix {
+	return Matrix{
+		a,
+	}
+}
+
+func New1(rows, cols int) Matrix {
+	matrix := make([][]float64, rows)
+	for i := range matrix {
+		matrix[i] = make([]float64, cols)
+	}
+	// 填充矩阵
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			matrix[i][j] = 1
+		}
+	}
+	return matrix
+}
+
 // 生成一个随机的数组
 func Rand(rows, cols int) Matrix {
 	// 设置随机种子
@@ -92,6 +112,15 @@ func (m Matrix) Determinant() float64 {
 
 func (m Matrix) I() Matrix {
 	return m.Inverse()
+}
+
+func (mat Matrix) Shape() (int, int) {
+	m := len(mat)
+	if m == 0 {
+		panic("empty array")
+	}
+	n := len(mat[0])
+	return m, n
 }
 
 // Inverse 返回矩阵的逆矩阵

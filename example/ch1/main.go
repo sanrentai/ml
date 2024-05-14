@@ -11,7 +11,7 @@ func main() {
 	fmt.Println(randMat)
 	invRandMat := randMat.I()
 	fmt.Println(invRandMat)
-	myEye := matrix.Multiplication(randMat, invRandMat)
+	myEye := matrix.Multiplication(randMat, invRandMat, 1.0)
 	fmt.Println(myEye)
 	fmt.Println(matrix.Sub(myEye, matrix.Eye(4)))
 }
