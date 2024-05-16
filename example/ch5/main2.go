@@ -10,10 +10,10 @@ import (
 func main2() {
 	dataArr, labelMat := loadDataSet()
 	wei := gradAscent(dataArr, labelMat)
-	plotBestFit(wei)
+	plotBestFit(wei, "gradAscent.png")
 }
 
-func plotBestFit(weights []float64) error {
+func plotBestFit(weights []float64, filename string) error {
 	dataMat, labelMat := loadDataSet()
 	// weightMat := mat.NewDense(len(weights), 1, weights)
 	// 提取数据集中的数据
@@ -47,6 +47,8 @@ func plotBestFit(weights []float64) error {
 	s1.GlyphStyle.Color = plotutil.Color(1)
 	p.Add(s1, s2)
 
+	plotutil.AddScatters(p, s1, s2)
+
 	// 绘制拟合直线
 	lineFunc := func(x float64) float64 {
 		return (-weights[0] - weights[1]*x) / weights[2]
@@ -61,7 +63,7 @@ func plotBestFit(weights []float64) error {
 	p.X.Min = -4
 
 	// 保存图像
-	if err := p.Save(4*vg.Inch, 4*vg.Inch, "output.png"); err != nil {
+	if err := p.Save(4*vg.Inch, 4*vg.Inch, filename); err != nil {
 		return err
 	}
 

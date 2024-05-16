@@ -3,7 +3,7 @@ package main
 func main3() {
 	dataArr, labelMat := loadDataSet()
 	wei := stocGradAscent0(dataArr, labelMat)
-	plotBestFit(wei)
+	plotBestFit(wei, "stocGradAscent0.png")
 }
 
 func stocGradAscent0(dataMatrix [][]float64, classLabels []float64) []float64 {
