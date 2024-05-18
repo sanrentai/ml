@@ -10,12 +10,12 @@ import (
 func main2() {
 
 	datMat, classLabels := loadSimpData()
-	classifierArray := adaBosstTrainDS(datMat, classLabels, 9)
+	classifierArray, _ := adaBosstTrainDS(datMat, classLabels, 9)
 	fmt.Println(classifierArray)
 }
 
 // DS 代表 Decision Stump 单层决策树，最流行的弱分类器
-func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) []*AdaStump {
+func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) ([]*AdaStump, []float64) {
 	weakClassArr := make([]*AdaStump, 0)
 	m := len(dataArr)
 	D := make([]float64, m)
@@ -55,5 +55,5 @@ func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) []*A
 		}
 	}
 
-	return weakClassArr
+	return weakClassArr, aggClassEst
 }

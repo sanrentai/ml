@@ -10,7 +10,7 @@ import (
 
 func main4() {
 	datArr, labelArr := loadDataSet("horseColicTraining2.txt")
-	calssifierArray := adaBosstTrainDS(datArr, labelArr, 10)
+	calssifierArray, _ := adaBosstTrainDS(datArr, labelArr, 10)
 	// fmt.Println(calssifierArray)
 	testArr, testLabelArr := loadDataSet("horseColicTest2.txt")
 	prediction10 := adaClassify(testArr, calssifierArray)

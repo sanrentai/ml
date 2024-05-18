@@ -8,7 +8,7 @@ import (
 
 func main3() {
 	datMat, classLabels := loadSimpData()
-	classifierArray := adaBosstTrainDS(datMat, classLabels, 9)
+	classifierArray, _ := adaBosstTrainDS(datMat, classLabels, 9)
 	fmt.Println(adaClassify([][]float64{
 		{0, 0},
 	}, classifierArray))
