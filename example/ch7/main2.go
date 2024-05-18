@@ -15,8 +15,8 @@ func main2() {
 }
 
 // DS 代表 Decision Stump 单层决策树，最流行的弱分类器
-func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) []map[string]interface{} {
-	weakClassArr := make([]map[string]interface{}, 0)
+func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) []*AdaStump {
+	weakClassArr := make([]*AdaStump, 0)
 	m := len(dataArr)
 	D := make([]float64, m)
 	for i := range D {
@@ -25,11 +25,11 @@ func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) []ma
 	aggClassEst := make([]float64, m)
 	for j := 0; j < numIt; j++ {
 		bestStump, err, classEst := buildStump(dataArr, classLabels, D)
-		fmt.Printf("D:%v\n", D)
+		// fmt.Printf("D:%v\n", D)
 		alpha := 0.5 * math.Log((1.0-err)/math.Max(err, 1e-16))
-		bestStump["alpha"] = alpha
+		bestStump.Alpha = alpha
 		weakClassArr = append(weakClassArr, bestStump)
-		fmt.Printf("classEst:%v\n", classEst)
+		// fmt.Printf("classEst:%v\n", classEst)
 
 		expon := ml.VecMul(ml.VecProd(-alpha, classLabels), classEst)
 		expon = ml.VecExp(expon)
@@ -41,7 +41,7 @@ func adaBosstTrainDS(dataArr [][]float64, classLabels []float64, numIt int) []ma
 		for i := range aggClassEst {
 			aggClassEst[i] += alpha * classEst[i]
 		}
-		fmt.Printf("aggClassEst:%v\n", aggClassEst)
+		// fmt.Printf("aggClassEst:%v\n", aggClassEst)
 		aggErrors := 0.0
 		for i := range aggClassEst {
 			if ml.Sign(aggClassEst[i]) != classLabels[i] {

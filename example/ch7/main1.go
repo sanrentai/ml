@@ -57,11 +57,11 @@ func stumpClassify(dataMatrix [][]float64, dimen int, threshVal float64, threshI
 // dataArr - 数据矩阵
 // classLabels - 数据标签
 // D - 样本权重
-func buildStump(dataArr [][]float64, classLabels []float64, D []float64) (map[string]interface{}, float64, []float64) {
+func buildStump(dataArr [][]float64, classLabels []float64, D []float64) (*AdaStump, float64, []float64) {
 	m := len(dataArr)
 	n := len(dataArr[0])
 	numSteps := 10.0
-	bestStump := make(map[string]interface{})
+	bestStump := &AdaStump{}
 	bestClasEst := make([]float64, m)
 	minError := math.Inf(1)
 	for i := 0; i < n; i++ {
@@ -87,12 +87,24 @@ func buildStump(dataArr [][]float64, classLabels []float64, D []float64) (map[st
 					for k := range bestClasEst {
 						bestClasEst[k] = predictedVals[k]
 					}
-					bestStump["dim"] = i
-					bestStump["thresh"] = threshVal
-					bestStump["ineq"] = inequal
+					bestStump.Dim = i
+					bestStump.Thresh = threshVal
+					bestStump.Ineq = inequal
 				}
 			}
 		}
 	}
 	return bestStump, minError, bestClasEst
+}
+
+type AdaStump struct {
+	Dim    int
+	Thresh float64
+	Ineq   string
+	Alpha  float64
+}
+
+func (a AdaStump) String() string {
+	return fmt.Sprintf(`{"dim": %d, "thresh": %v, "ineq": "%s", "alpha": %v}
+ `, a.Dim, a.Thresh, a.Ineq, a.Alpha)
 }
